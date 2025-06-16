@@ -40,7 +40,7 @@ const TaskItem: React.FC<Props> = ({
   isBusy,
 }) => {
   return (
-    <div className="bg-white/90 shadow-sm border border-gray-200 rounded-xl mb-4 overflow-hidden ">
+    <div className="bg-white/90 shadow border border-gray-200 rounded-xl mb-4 overflow-hidden">
       {isEditing ? (
         <TaskEditForm
           editForm={editForm}
@@ -50,31 +50,29 @@ const TaskItem: React.FC<Props> = ({
         />
       ) : (
         <div
-          className={`flex items-start gap-3 p-4 ${task.status === "DONE" ? "bg-gray-300" : ""}`}
+          className={`flex gap-4 p-4 ${task.status === "DONE" ? "bg-gray-200" : ""}`}
         >
-          {/* <input
-            type="checkbox"
-            checked={task.status === "DONE"}
-            onChange={onToggle}
-            className="mt-1 rounded-full"
-          /> */}
+          {/* Checkbox */}
           <Checkbox
             checked={task.status === "DONE"}
             onCheckedChange={onToggle}
-            className="mt-1 rounded-full"
+            className="mt-1 shrink-0"
           />
+
+          {/* Main content */}
           <div className="flex-1">
-            <div className="flex justify-between">
-              <h3 className="font-semibold text-lg">{task.name}</h3>
+            <div className="flex justify-between items-start">
+              <h3 className="text-lg font-semibold">{task.name}</h3>
               <PriorityBadge priority={task.priority} />
             </div>
+
             {task.description && (
-              <p className="text-sm text-gray-700">{task.description}</p>
+              <p className="text-sm text-gray-700 mt-1">{task.description}</p>
             )}
-            <div className="flex justify-between items-center gap-2 text-xs mt-4">
-              {/* <div className="flex items-center gap-2 text-xs mt-4"> */}
+
+            <div className="mt-4 flex flex-wrap gap-4 items-center text-xs text-gray-600">
               {task.tags && (
-                <span className="text-blue-800 uppercase font-semibold text-xs">
+                <span className="text-blue-800 font-semibold uppercase">
                   {task.tags}
                 </span>
               )}
@@ -82,50 +80,44 @@ const TaskItem: React.FC<Props> = ({
               <span>
                 {format(new Date(task.createdAt), "MMM d, yyyy • h:mm a")}
               </span>
-
-              <button
-                onClick={onEdit}
-                disabled={isBusy}
-                className="text-blue-600 hover:text-blue-800"
-                // title="Edit"
-              >
-                <Tooltip>
-                  <TooltipTrigger>
-                    {" "}
-                    <CiEdit size={16} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Edit task</p>
-                  </TooltipContent>
-                </Tooltip>
-              </button>
-              <button
-                onClick={onDelete}
-                disabled={isBusy}
-                // variant="destructive"
-                className="text-red-500 hover:underline"
-                title="delete"
-              >
-                <Tooltip>
-                  <TooltipTrigger>
-                    {" "}
-                    <MdOutlineDelete size={16} />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Delete task</p>
-                  </TooltipContent>
-                </Tooltip>
-              </button>
-              {/* </div> */}
-
-              <Link
-                to="/task/$taskId"
-                params={{ taskId: task.id }}
-                className="text-blue-600 underline hover:text-blue-800 text-xs align-bottom"
-              >
-                View
-              </Link>
             </div>
+          </div>
+
+          {/* Actions */}
+          <div className="flex flex-col justify-between items-end gap-2 text-sm">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={onEdit}
+                  disabled={isBusy}
+                  className="text-blue-600 hover:text-blue-800"
+                >
+                  <CiEdit size={18} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Edit task</TooltipContent>
+            </Tooltip>
+
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={onDelete}
+                  disabled={isBusy}
+                  className="text-red-500 hover:text-red-700"
+                >
+                  <MdOutlineDelete size={18} />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>Delete task</TooltipContent>
+            </Tooltip>
+
+            <Link
+              to="/task/$taskId"
+              params={{ taskId: task.id }}
+              className="text-blue-600 hover:underline"
+            >
+              View
+            </Link>
           </div>
         </div>
       )}
