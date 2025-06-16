@@ -23,7 +23,6 @@ const TaskFormModal: React.FC<Props> = ({
       priority: "LOW" as Priority,
     },
     onSubmit: async ({ value }) => {
-      console.log("Form submission started", value);
       try {
         const taskData: CreateTaskRequest = {
           name: value.name.trim(),
@@ -37,8 +36,6 @@ const TaskFormModal: React.FC<Props> = ({
         await onCreateTask(taskData);
         form.reset();
       } catch (error: any) {
-        console.error("Error in form submission:", error);
-        console.error("Error response:", error.response?.data);
         alert(
           "Error creating task: " +
             (error.response?.data?.message || error.message)
@@ -54,26 +51,24 @@ const TaskFormModal: React.FC<Props> = ({
   };
 
   return (
-    <div>
-      {/* flex gap-5 items-center */}
+    <div className="mt-20">
       <div className="flex justify-end my-8 ">
-        {/* <h2>Plan your day to increase productivity. Click to add your tasks</h2> */}
         <button
           onClick={() => setIsOpen(true)}
-          className="bg-green-500 text-white text-lg font-semibold px-4 py-2 rounded-lg"
+          className="bg-gradient-to-t from-blue-600 to-blue-400 hover:from-blue-800 text-white text-lg font-semibold px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out"
         >
           + Add Task
         </button>
       </div>
       {isOpen && (
         <div
-          className="absolute top-0 left-0 right-0 h-full flex justify-center items-center bg-[rgba(0,0,0,0.4)]"
+          className="absolute top-0 left-0 z-50 right-0 h-full flex justify-center items-center bg-[rgba(0,0,0,0.4)]"
           onClick={() => setIsOpen(false)}
         >
           <div onClick={(e) => e.stopPropagation()} role="wrapper">
             <form
               onSubmit={handleFormSubmit}
-              className="bg-white w-[34.5rem] min-h-[50vh] rounded-2xl p-10 space-y-3 mb-6"
+              className="bg-white w-[34.5rem] min-h-[50vh] rounded-2xl p-10 space-y-3 mb-6 text-sm"
             >
               <div>
                 <form.Field
@@ -97,7 +92,7 @@ const TaskFormModal: React.FC<Props> = ({
                           onBlur={field.handleBlur}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder="Task name"
-                          className="w-full p-2 border rounded"
+                          className="w-full p-2 border rounded-md mt-1 bg-transparent"
                         />
                         <FieldInfo field={field} />
                       </>
@@ -119,7 +114,7 @@ const TaskFormModal: React.FC<Props> = ({
                           value={field.state.value}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder="Task description (optional)"
-                          className="w-full p-2 border rounded"
+                          className="w-full p-2 border rounded-md mt-1"
                         />
                       </>
                     );
@@ -127,30 +122,28 @@ const TaskFormModal: React.FC<Props> = ({
                 />
               </div>
 
-              <div>
+              <div className="grid grid-cols-2 gap-4">
                 <form.Field
                   name="tags"
                   children={(field) => (
-                    <>
+                    <div className="flex flex-col gap-1">
                       <label htmlFor={field.name}>Task tag</label>
                       <input
                         id={field.name}
                         name={field.name}
                         value={field.state.value}
                         onChange={(e) => field.handleChange(e.target.value)}
-                        placeholder="Task tags (e.g., work, personal, etc.)"
-                        className="w-full p-2 border rounded"
+                        placeholder="Tag (e.g., work, personal)"
+                        className="w-full p-2 border rounded-md mt-1"
                       />
-                    </>
+                    </div>
                   )}
                 />
-              </div>
 
-              <div>
                 <form.Field
                   name="priority"
                   children={(field) => (
-                    <>
+                    <div className="flex flex-col gap-1">
                       <label htmlFor={field.name}>Priority</label>
                       <select
                         id={field.name}
@@ -159,13 +152,13 @@ const TaskFormModal: React.FC<Props> = ({
                         onChange={(e) =>
                           field.handleChange(e.target.value as Priority)
                         }
-                        className="w-full p-2 border rounded"
+                        className="w-full p-2 border rounded-md mt-1"
                       >
                         <option value="LOW">Low</option>
                         <option value="MEDIUM">Medium</option>
                         <option value="HIGH">High</option>
                       </select>
-                    </>
+                    </div>
                   )}
                 />
               </div>

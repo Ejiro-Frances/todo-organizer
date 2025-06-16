@@ -13,7 +13,7 @@ type Props = {
 const PriorityBadge: React.FC<Props> = ({ priority }) => {
   return (
     <span
-      className={`text-xs font-medium px-2 py-1 rounded-full ${colorMap[priority]}`}
+      className={`flex items-center text-xs font-medium px-1.5 py-0.5 rounded-md ${colorMap[priority]}`}
     >
       {priority.charAt(0) + priority.slice(1).toLowerCase()}
     </span>

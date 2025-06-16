@@ -22,9 +22,9 @@ const TaskFilterButtons: React.FC<Props> = ({
         <button
           key={status}
           onClick={() => setActiveFilter(status)}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition ${
+          className={`px-4 py-2 rounded-md text-sm font-medium transition hover:bg-blue-100 hover:text-gray-800 ${
             activeFilter === status
-              ? "bg-blue-600 text-white"
+              ? "bg-blue-500  text-white"
               : "bg-gray-200 text-gray-800"
           }`}
         >

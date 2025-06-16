@@ -1,6 +1,7 @@
 import * as React from "react";
 import { useState, useEffect, useMemo } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { Link } from "@tanstack/react-router";
 import { IoIosClose, IoIosSearch } from "react-icons/io";
 import { getTasks } from "@/lib/api";
 import { useTaskOperations } from "@/hooks/useTaskOperations";
@@ -9,16 +10,11 @@ import TaskFilterButtons from "./taskfilterbuttons";
 import TaskList from "./tasklist";
 import LoadingIndicator from "./loadingindicator";
 import { Skeleton } from "./ui/skeleton";
+import { Input } from "./ui/input";
 import PaginationControls from "./paginationcontrols";
+import { paginationConfig } from "../constants/pagination config";
 
-// Configuration for pagination
-const PAGINATION_CONFIG = {
-  DEFAULT_TASKS_PER_PAGE: 10,
-  PAGE_SIZE_OPTIONS: [5, 10, 25, 50] as const,
-  MAX_VISIBLE_PAGES: 5,
-} as const;
-
-type PageSizeOption = (typeof PAGINATION_CONFIG.PAGE_SIZE_OPTIONS)[number];
+type PageSizeOption = (typeof paginationConfig.PAGE_SIZE_OPTIONS)[number];
 
 const TaskBoard: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -49,7 +45,7 @@ const TaskBoard: React.FC = () => {
   // Pagination state
   const [currentPage, setCurrentPage] = useState(1);
   const [tasksPerPage, setTasksPerPage] = useState<PageSizeOption>(
-    PAGINATION_CONFIG.DEFAULT_TASKS_PER_PAGE
+    paginationConfig.DEFAULT_TASKS_PER_PAGE
   );
 
   // Debounce search query
@@ -91,7 +87,6 @@ const TaskBoard: React.FC = () => {
     ],
     queryFn: () =>
       getTasks(currentPage, tasksPerPage, activeFilter, debouncedSearch),
-    keepPreviousData: true,
   });
 
   const tasks = taskResponse?.data ?? [];
@@ -111,10 +106,10 @@ const TaskBoard: React.FC = () => {
 
   // Adjust current page if it exceeds total pages after filtering/searching
   useEffect(() => {
-    if (meta && currentPage > meta.toalPages) {
+    if (meta && currentPage > meta.totalPages) {
       setCurrentPage(meta.totalPages);
     }
-  }, [meta?.totalPage]);
+  }, [meta?.totalPages]);
 
   // Search handlers
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -202,17 +197,16 @@ const TaskBoard: React.FC = () => {
   }, [currentPage]);
 
   return (
-    <main className="bg-gray-100 min-h-screen flex justify-center ">
-      <section className="w-full max-w-2xl mx-auto p-4">
-        {/* Search Input */}
-        <div className="mb-4">
-          <div className="fixed max-w-[40rem] mx-auto w-full z-50 bg-gray-100">
-            <input
-              type="text"
+    <main className="bg-[#c2d0d9] min-h-screen flex justify-center pb-10">
+      <section className="w-full max-w-2xl p-4 ">
+        <div className="fixed top-0 left-0 w-full z-30 bg-[#c2d0d9] shadow-2xs">
+          {/* Search Input */}
+          <div className="relative max-w-[40rem] mx-auto my-4">
+            <Input
               placeholder="Search tasks by title, description, or tags..."
               value={searchQuery}
               onChange={handleSearchChange}
-              className="w-full py-2 px-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="py-2 px-10 shadow placeholder:text-[#333333] text-[#1a1a1a]"
             />
             {searchQuery && (
               <button
@@ -228,16 +222,21 @@ const TaskBoard: React.FC = () => {
             </div>
           </div>
           {debouncedSearch && (
-            <div className="mt-2 text-xs text-gray-500">
+            <div className="mt-2 text-xs text-center pb-1 text-gray-500">
               Press Escape to clear search
             </div>
           )}
+
+          {/* navigate to test error */}
+          <Link
+            to="/testerror"
+            className="fixed bottom-2 right-4 bg-red-600 hover:bg-red-700 py-2 px-4 text-sm rounded text-white transition-colors duration-200 ease-in-out"
+          >
+            Error test page
+          </Link>
         </div>
 
-        <h1 className="font-extrabold text-3xl mb-5 text-center mt-20">
-          My Todo App
-        </h1>
-
+        {/* modal to add task */}
         <TaskFormModal
           onCreateTask={createMutation.mutateAsync}
           isOpen={isModalOpen}
@@ -264,9 +263,9 @@ const TaskBoard: React.FC = () => {
                 onChange={(e) =>
                   setTasksPerPage(Number(e.target.value) as PageSizeOption)
                 }
-                className="border border-gray-300 rounded px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="border border-gray-500 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                {PAGINATION_CONFIG.PAGE_SIZE_OPTIONS.map((size) => (
+                {paginationConfig.PAGE_SIZE_OPTIONS.map((size) => (
                   <option key={size} value={size}>
                     {size}
                   </option>

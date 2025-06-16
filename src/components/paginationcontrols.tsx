@@ -7,6 +7,7 @@ import {
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
+import { paginationConfig } from "../constants/pagination config";
 
 type PaginationControlsProps = {
   currentPage: number;
@@ -21,9 +22,8 @@ const PaginationControls = ({
 }: PaginationControlsProps) => {
   const getPaginationItems = (): (number | "ellipsis")[] => {
     const items: (number | "ellipsis")[] = [];
-    const MAX_VISIBLE_PAGES = 5;
 
-    if (totalPages <= MAX_VISIBLE_PAGES) {
+    if (totalPages <= paginationConfig.MAX_VISIBLE_PAGES) {
       for (let i = 1; i <= totalPages; i++) {
         items.push(i);
       }
