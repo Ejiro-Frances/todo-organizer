@@ -3,6 +3,7 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import { type CreateTaskRequest, type Priority } from "@/types/types";
 import FieldInfo from "@/components/fieldinfo";
+import { format } from "date-fns";
 
 type Props = {
   onCreateTask: (task: CreateTaskRequest) => Promise<any>;
@@ -52,13 +53,17 @@ const TaskFormModal: React.FC<Props> = ({
 
   return (
     <div className="mt-20">
-      <div className="flex justify-end my-8 ">
-        <button
+      <div className="flex justify-between items-end my-8 border-b pb-4">
+        <div>
+          <h1 className="font-bold text-lg md:text-2xl mb-2">Today's Tasks</h1>
+          <p className="text-sm">{format(new Date(), "EEEE d, MMM yyyy")}</p>
+        </div>
+        <Button
           onClick={() => setIsOpen(true)}
-          className="bg-gradient-to-t from-blue-600 to-blue-400 hover:from-blue-800 text-white text-lg font-semibold px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out"
+          className=" text-sm font-semibold px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out"
         >
           + Add Task
-        </button>
+        </Button>
       </div>
       {isOpen && (
         <div
@@ -68,7 +73,7 @@ const TaskFormModal: React.FC<Props> = ({
           <div onClick={(e) => e.stopPropagation()} role="wrapper">
             <form
               onSubmit={handleFormSubmit}
-              className="bg-white w-[34.5rem] min-h-[50vh] rounded-2xl p-10 space-y-3 mb-6 text-sm"
+              className="bg-white w-[34.5rem] max-w-[60%] md:max-w-[80%] mx-auto min-h-[50vh] rounded-2xl p-5 md:p-10 space-y-3 mb-6 text-sm"
             >
               <div>
                 <form.Field

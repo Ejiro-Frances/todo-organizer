@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
 import { toast } from "sonner";
 import { createTask, updateTask, deleteTask } from "@/lib/api";
+import { saveTasksToStorage } from "@/lib/storage";
 import {
   type Task,
   type UpdateTaskRequest,
@@ -16,64 +17,104 @@ export const useTaskOperations = () => {
   );
   const [updatingTaskId, setUpdatingTaskId] = useState<string | null>(null);
   const [deletingTaskId, setDeletingTaskId] = useState<string | null>(null);
+
   const queryClient = useQueryClient();
+
+  const updateTaskLocally = (taskId: string, updatedFields: Partial<Task>) => {
+    queryClient.setQueryData<Task[]>(["tasks"], (oldData = []) =>
+      oldData.map((task) =>
+        task.id === taskId ? { ...task, ...updatedFields } : task
+      )
+    );
+
+    queryClient.setQueryData<Task | undefined>(["task", taskId], (old) =>
+      old ? { ...old, ...updatedFields } : old
+    );
+  };
+
+  const handleStorageUpdate = async () => {
+    const updatedTasks = queryClient.getQueryData<Task[]>(["tasks"]);
+    if (updatedTasks) {
+      try {
+        await saveTasksToStorage(updatedTasks);
+      } catch {
+        toast.error("Failed to sync tasks with local storage.");
+      }
+    }
+  };
 
   const createMutation = useMutation({
     mutationFn: createTask,
-    onSuccess: () => {
+    onSuccess: async () => {
       toast.success("Task created!");
-      queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });
+      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      await handleStorageUpdate();
     },
     onError: (error) => {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || error.message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      const message = isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Failed to create task. Please try again.";
+      toast.error(message);
     },
   });
 
   const deleteMutation = useMutation({
     mutationFn: deleteTask,
-    onSuccess: () => {
+    onSuccess: async (_, taskId) => {
       toast.success("Task deleted!");
-      queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });
+      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      await queryClient.invalidateQueries({ queryKey: ["task", taskId] });
+      await handleStorageUpdate();
     },
     onError: (error) => {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || error.message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      const message = isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Failed to delete task. Please try again.";
+      toast.error(message);
     },
   });
 
   const updateMutation = useMutation({
     mutationFn: ({ id, updates }: { id: string; updates: UpdateTaskRequest }) =>
       updateTask(id, updates),
-    onSuccess: () => {
+    onSuccess: async (_, variables) => {
       toast.success("Task updated successfully!");
-      queryClient.invalidateQueries({ queryKey: ["tasks"], exact: false });
+      await queryClient.invalidateQueries({ queryKey: ["tasks"] });
+      await queryClient.invalidateQueries({ queryKey: ["task", variables.id] });
+      await handleStorageUpdate();
     },
     onError: (error) => {
-      if (isAxiosError(error)) {
-        toast.error(error.response?.data?.message || error.message);
-      } else {
-        toast.error("Something went wrong");
-      }
+      const message = isAxiosError(error)
+        ? error.response?.data?.message || error.message
+        : "Failed to update task. Please try again.";
+      toast.error(message);
     },
   });
 
   const handleToggleTask = async (task: Task) => {
-    const updates: UpdateTaskRequest = {
-      status: task.status === "DONE" ? "TODO" : "DONE",
-      completedAt: task.status === "DONE" ? null : new Date().toISOString(),
-    };
+    const newStatus = task.status === "DONE" ? "TODO" : "DONE";
+    const newCompletedAt =
+      newStatus === "DONE" ? new Date().toISOString() : null;
+
+    updateTaskLocally(task.id, {
+      status: newStatus,
+      completedAt: newCompletedAt,
+    });
 
     try {
-      await updateMutation.mutateAsync({ id: task.id, updates });
-    } catch (error) {
-      toast.error("Failed to update task status");
+      await updateMutation.mutateAsync({
+        id: task.id,
+        updates: {
+          status: newStatus,
+          completedAt: newCompletedAt,
+        },
+      });
+    } catch {
+      updateTaskLocally(task.id, {
+        status: task.status,
+        completedAt: task.completedAt,
+      });
+      toast.error("Failed to update task status.");
     }
   };
 
@@ -101,13 +142,10 @@ export const useTaskOperations = () => {
   };
 
   const handleSaveEdit = async (taskId: string) => {
-    setUpdatingTaskId(taskId);
     const editForm = editForms[taskId];
+    if (!editForm) return;
 
-    if (!editForm) {
-      setUpdatingTaskId(null);
-      return;
-    }
+    setUpdatingTaskId(taskId);
 
     const updates: UpdateTaskRequest = {
       name: editForm.name.trim(),
@@ -124,6 +162,8 @@ export const useTaskOperations = () => {
         const { [taskId]: _, ...rest } = prev;
         return rest;
       });
+    } catch {
+      toast.error("Failed to save task changes.");
     } finally {
       setUpdatingTaskId(null);
     }
@@ -135,8 +175,8 @@ export const useTaskOperations = () => {
         const { [editingTask]: _, ...rest } = prev;
         return rest;
       });
+      setEditingTask(null);
     }
-    setEditingTask(null);
   };
 
   const handleEditChange = (id: string, field: string, value: string) => {
@@ -161,6 +201,11 @@ export const useTaskOperations = () => {
     createMutation,
     updateMutation,
     deleteMutation,
+
+    // Mutation States
+    isCreating: createMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isDeleting: deleteMutation.isPending,
 
     // Handlers
     handleToggleTask,

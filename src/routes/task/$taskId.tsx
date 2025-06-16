@@ -1,33 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import TaskList from "@/components/tasklist";
-import { useTaskOperations } from "@/hooks/useTaskOperations";
 import { getTask } from "@/lib/api";
+import TaskDetailsCard from "@/components/taskdetails";
 import { MdArrowBack } from "react-icons/md";
+import { Link } from "@tanstack/react-router";
 
 export const Route = createFileRoute("/task/$taskId")({
-  component: TaskDetails,
+  component: TaskDetailsPage,
 });
 
-function TaskDetails() {
+function TaskDetailsPage() {
   const { taskId } = Route.useParams();
-  const navigate = useNavigate();
 
-  // Use the shared task operations hook
-  const {
-    editingTask,
-    editForms,
-    updatingTaskId,
-    deletingTaskId,
-    handleToggleTask,
-    handleDeleteTask: originalHandleDeleteTask,
-    handleEditTask,
-    handleSaveEdit,
-    handleCancelEdit,
-    handleEditChange,
-  } = useTaskOperations();
-
-  // Fetch the specific task
   const {
     data: task,
     isLoading,
@@ -37,20 +21,8 @@ function TaskDetails() {
     queryFn: () => getTask(taskId),
     enabled: !!taskId,
   });
-  const handleDeleteTask = async (taskId: string) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this task?"
-    );
-    if (!confirmed) return;
 
-    try {
-      await originalHandleDeleteTask(taskId);
-      navigate({ to: "/" });
-    } catch (error) {
-      console.error("Error deleting task:", error);
-    }
-  };
-
+  // Loading
   if (isLoading) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -73,6 +45,7 @@ function TaskDetails() {
     );
   }
 
+  // Error or not found
   if (error || !task) {
     return (
       <div className="max-w-4xl mx-auto p-6">
@@ -95,84 +68,19 @@ function TaskDetails() {
     );
   }
 
+  // Success
   return (
     <div className="max-w-4xl mx-auto p-6">
-      {/* Header */}
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center gap-2 mb-6">
         <Link
           to="/"
-          className="flex items-center gap-2 text-blue-600 hover:text-blue-800 transition-colors"
+          className="flex items-center gap-2 text-blue-600 hover:text-blue-800"
         >
           <MdArrowBack className="w-5 h-5" />
           Back to Tasks
         </Link>
-
-        <div className="text-sm text-gray-500">Task Details</div>
       </div>
-
-      {/* Task Details using TaskList component */}
-      <div className="bg-gray-50 rounded-xl p-6">
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Task Details</h1>
-
-        <TaskList
-          tasks={[task]} // Pass single task as array
-          editingTaskId={editingTask}
-          editForms={editForms}
-          onEditChange={handleEditChange}
-          onSaveEdit={handleSaveEdit}
-          onCancelEdit={handleCancelEdit}
-          onEdit={handleEditTask}
-          onDelete={handleDeleteTask} // Use our custom delete handler
-          onToggle={handleToggleTask}
-          updatingTaskId={updatingTaskId}
-          deletingTaskId={deletingTaskId}
-        />
-
-        {/* Additional details section (optional) */}
-        {/* {!editingTask && (
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-              <div>
-                <span className="font-medium text-gray-500">Task ID:</span>
-                <span className="ml-2 font-mono text-gray-700">{task.id}</span>
-              </div>
-              <div>
-                <span className="font-medium text-gray-500">Created:</span>
-                <span className="ml-2 text-gray-700">
-                  {new Date(task.createdAt).toLocaleDateString()}
-                </span>
-              </div>
-            </div>
-          </div>
-        )} */}
-      </div>
+      <TaskDetailsCard task={task} />
     </div>
   );
 }
-
-export default TaskDetails;
-
-// import { createFileRoute, notFound } from "@tanstack/react-router";
-// import TaskDetails from "@/components/taskdetails";
-// export const Route = createFileRoute("/task/$taskId")({
-//   loader: ({ params }) => {
-//     const { tododId } = params;
-//     const task = task.find((t) => t.id === taskId);
-//     if (!task) {
-//       throw notFound();
-//     }
-//     return { task };
-//   },
-//   component: TaskDetails,
-// });
-
-// function TaskDetails() {
-//   const { task } = Route.useLoaderData();
-
-//   return (
-//     <div>
-//       <TaskDetails />
-//       {/* <h1>Task details</h1> */}
-//     </div>
-//   );
-// }

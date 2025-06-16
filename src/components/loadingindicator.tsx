@@ -1,15 +1,15 @@
 import React from "react";
-import { Skeleton } from "./ui/skeleton";
+import { Spinner } from "./ui/spinner";
 
 const LoadingIndicator: React.FC<{ show: boolean }> = ({ show }) => {
   if (!show) return null;
 
   return (
-    <div className="fixed top-1/2 left-0 -translate-x-1/2 right-4 px-4 py-2">
-      <div className="space-y-2">
-        <Skeleton className="h-8 max-w-[40rem] w-[40%] rounded-lg bg-gray-200" />
-        {/* <Skeleton className="h-8 max-w-[40rem] w-[70%] rounded-md bg-gray-200" /> */}
-      </div>
+    <div className="fixed z-50 top-0 left-0 w-full h-full flex justify-center items-center bg-[rgba(0,0,0,0.3)]">
+      <Spinner
+        className="animate-[spin_1.5s_linear_infinite] text-blue-700"
+        size="xxl"
+      />
     </div>
   );
 };

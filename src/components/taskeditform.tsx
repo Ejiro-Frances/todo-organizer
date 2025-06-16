@@ -1,4 +1,5 @@
 import React from "react";
+import { Button } from "./ui/button";
 
 type Props = {
   editForm: any;
@@ -14,20 +15,30 @@ const TaskEditForm: React.FC<Props> = ({
   onCancel,
 }) => {
   return (
-    <>
-      <input
-        type="text"
-        value={editForm.name}
-        onChange={(e) => onChange("name", e.target.value)}
-        className="w-full border p-2 mb-2"
-        placeholder="Task name"
-      />
-      <textarea
-        value={editForm.description}
-        onChange={(e) => onChange("description", e.target.value)}
-        className="w-full border p-2 mb-2"
-        placeholder="Description"
-      />
+    <div className="p-8 space-y-3 mb-1 text-sm">
+      <>
+        <label htmlFor="" className="font-semibold">
+          Title
+        </label>
+        <input
+          type="text"
+          value={editForm.name}
+          onChange={(e) => onChange("name", e.target.value)}
+          className="w-full border p-2 mt-2 rounded-md"
+          placeholder="Task name"
+        />
+      </>
+      <>
+        <label htmlFor="" className="font-semibold">
+          Description
+        </label>
+        <textarea
+          value={editForm.description}
+          onChange={(e) => onChange("description", e.target.value)}
+          className="w-full border p-2 mt-2 rounded-md"
+          placeholder="Description"
+        />
+      </>
       <div className="grid grid-cols-2 gap-2 mb-2">
         <div>
           <label className="text-sm block mb-1">Priority</label>
@@ -65,14 +76,12 @@ const TaskEditForm: React.FC<Props> = ({
         </div>
       </div>
       <div className="flex justify-end gap-2">
-        <button onClick={onSave} className="text-green-600 hover:underline">
-          Save
-        </button>
-        <button onClick={onCancel} className="text-gray-600 hover:underline">
+        <Button onClick={onCancel} variant="outline">
           Cancel
-        </button>
+        </Button>
+        <Button onClick={onSave}>Save</Button>
       </div>
-    </>
+    </div>
   );
 };
 

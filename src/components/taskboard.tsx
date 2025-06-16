@@ -9,10 +9,11 @@ import TaskFormModal from "./taskmodal";
 import TaskFilterButtons from "./taskfilterbuttons";
 import TaskList from "./tasklist";
 import LoadingIndicator from "./loadingindicator";
-import { Skeleton } from "./ui/skeleton";
 import { Input } from "./ui/input";
 import PaginationControls from "./paginationcontrols";
 import { paginationConfig } from "../constants/pagination config";
+import { Skeleton } from "./ui/skeleton";
+import { getTasksFromStorage, saveTasksToStorage } from "@/lib/storage";
 
 type PageSizeOption = (typeof paginationConfig.PAGE_SIZE_OPTIONS)[number];
 
@@ -85,8 +86,25 @@ const TaskBoard: React.FC = () => {
       activeFilter,
       debouncedSearch,
     ],
-    queryFn: () =>
-      getTasks(currentPage, tasksPerPage, activeFilter, debouncedSearch),
+    queryFn: async () => {
+      try {
+        const response = await getTasks(
+          currentPage,
+          tasksPerPage,
+          activeFilter,
+          debouncedSearch
+        );
+        await saveTasksToStorage(response); // ✅ Save to localforage
+        return response;
+      } catch (error) {
+        const cached = await getTasksFromStorage(); // ✅ Fallback
+        if (cached) {
+          return cached;
+        }
+        throw new Error("Unable to fetch tasks from API or cache.");
+      }
+    },
+    staleTime: 1000 * 60 * 5,
   });
 
   const tasks = taskResponse?.data ?? [];
@@ -196,46 +214,73 @@ const TaskBoard: React.FC = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   }, [currentPage]);
 
+  const statusCounts = useMemo(() => {
+    const countMap = {
+      ALL: tasks.length,
+      TODO: 0,
+      IN_PROGRESS: 0,
+      DONE: 0,
+    };
+
+    for (const task of tasks) {
+      if (task.status in countMap) {
+        countMap[task.status as keyof typeof countMap]++;
+      }
+    }
+
+    return countMap;
+  }, [tasks]);
+
   return (
-    <main className="bg-[#c2d0d9] min-h-screen flex justify-center pb-10">
-      <section className="w-full max-w-2xl p-4 ">
-        <div className="fixed top-0 left-0 w-full z-30 bg-[#c2d0d9] shadow-2xs">
-          {/* Search Input */}
-          <div className="relative max-w-[40rem] mx-auto my-4">
-            <Input
-              placeholder="Search tasks by title, description, or tags..."
-              value={searchQuery}
-              onChange={handleSearchChange}
-              className="py-2 px-10 shadow placeholder:text-[#333333] text-[#1a1a1a]"
-            />
-            {searchQuery && (
-              <button
-                onClick={handleClearSearch}
-                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
-                aria-label="Clear search"
-              >
-                <IoIosClose size={24} />
-              </button>
+    <main className="bg-[#f5f5f5] min-h-screen flex justify-center pb-10">
+      <section className="w-full max-w-[95%] md:max-w-[90%] p-4 ">
+        <div className="fixed top-4 left-4 right-4 py-2 px-4 z-30 bg-[#f5f5f5] shadow-2xs">
+          <div className="flex justify-between md:mx-10">
+            <div className="flex gap-2 items-center">
+              <img
+                src="/logo.svg"
+                alt=""
+                aria-polite
+                className="w-8 md:w-10 h-8 md:h-10"
+              />
+              <p className="text-[#001633] md:text-2xl font-bold">To-Do</p>
+            </div>
+            {/* Search Input */}
+            <div className="relative my-2 w-1/2">
+              <Input
+                placeholder="Search tasks by title, description, or tags..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="py-2 px-10 shadow placeholder:text-[#333333] text-[#1a1a1a]"
+              />
+              {searchQuery && (
+                <button
+                  onClick={handleClearSearch}
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+                  aria-label="Clear search"
+                >
+                  <IoIosClose size={24} />
+                </button>
+              )}
+              <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                <IoIosSearch />
+              </div>
+            </div>
+            {debouncedSearch && (
+              <div className="mt-2 text-xs text-center pb-1 text-gray-500">
+                Press Escape to clear search
+              </div>
             )}
-            <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-              <IoIosSearch />
-            </div>
+
+            {/* navigate to test error */}
+            <Link
+              to="/testerror"
+              className="fixed bottom-2 right-4 bg-red-600 hover:bg-red-700 py-2 px-4 text-sm rounded text-white transition-colors duration-200 ease-in-out"
+            >
+              Error test page
+            </Link>
           </div>
-          {debouncedSearch && (
-            <div className="mt-2 text-xs text-center pb-1 text-gray-500">
-              Press Escape to clear search
-            </div>
-          )}
-
-          {/* navigate to test error */}
-          <Link
-            to="/testerror"
-            className="fixed bottom-2 right-4 bg-red-600 hover:bg-red-700 py-2 px-4 text-sm rounded text-white transition-colors duration-200 ease-in-out"
-          >
-            Error test page
-          </Link>
         </div>
-
         {/* modal to add task */}
         <TaskFormModal
           onCreateTask={createMutation.mutateAsync}
@@ -246,6 +291,7 @@ const TaskBoard: React.FC = () => {
         <TaskFilterButtons
           activeFilter={activeFilter}
           setActiveFilter={setActiveFilter}
+          counts={statusCounts}
         />
 
         {/* Enhanced results info */}
