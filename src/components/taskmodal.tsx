@@ -104,6 +104,7 @@ const TaskFormModal: React.FC<Props> = ({
                           id={field.name}
                           name={field.name}
                           value={field.state.value}
+                          rows={4}
                           onChange={(e) => field.handleChange(e.target.value)}
                           placeholder="Task description (optional)"
                           className="w-full p-2 border rounded-md mt-1"

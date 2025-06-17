@@ -77,6 +77,17 @@ const TaskBoard: React.FC = () => {
     return () => window.removeEventListener("keydown", handleEsc);
   }, [isModalOpen, searchQuery]);
 
+  useEffect(() => {
+    if (isModalOpen) {
+      document.body.style.overflow = "hidden";
+    }
+
+    // Clean up on unmount
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isModalOpen]);
+
   const { data: taskResponse, isLoading } = useQuery({
     queryKey: [
       "tasks",

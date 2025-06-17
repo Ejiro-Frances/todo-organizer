@@ -27,7 +27,7 @@ const TaskFilterButtons: React.FC<Props> = ({
 
   return (
     <div className="max-w-[95%] mx-auto lg:bg-[#FBFBFB] rounded-2xl lg:rounded-[4rem] py-3 px-4 lg:px-5 flex flex-col lg:flex-row gap-5 lg:gap-10 items-center">
-      <div className="flex-1 flex gap-2 justify-between overflow-auto [bg-[#FBFBFB] lg:bg-transparent">
+      <div className="flex-1 flex gap-2 justify-between overflow-auto [bg-[#FBFBFB] lg:bg-transparent px-5">
         {filters.map((status) => (
           <button
             key={status}
@@ -35,12 +35,12 @@ const TaskFilterButtons: React.FC<Props> = ({
             className={` flex items-center px-4 py-2  font-medium transition-all duration-150 ${activeFilter === status ? "border-r-4 border-[#D9D9D9]" : ""}`}
           >
             <span
-              className={`mr-4 text-sm lg:text-lg font-semibold capitalize ${activeFilter === status ? "text-[#004299]" : "text-[#999999]"}`}
+              className={`mr-1.5 md:mr-4 text-[0.625rem] lg:text-lg font-semibold capitalize ${activeFilter === status ? "text-[#004299]" : "text-[#999999]"}`}
             >
               {status === "ALL" ? "ALL" : `${status.replace("_", " ")}`}
             </span>
             <span
-              className={`block w-7 h-7 text-sm align-middle py-1 text-white rounded-full ${activeFilter === status ? "bg-[#004299]" : "bg-[#D9D9D9]"}`}
+              className={`block w-5 md:w-7 h-5 md:h-7 text-[0.625rem] md:text-sm align-middle py-1 text-white rounded-full ${activeFilter === status ? "bg-[#004299]" : "bg-[#D9D9D9]"}`}
             >
               {status === "ALL" ? `${counts.ALL}` : `${counts[status]}`}
             </span>
@@ -48,7 +48,7 @@ const TaskFilterButtons: React.FC<Props> = ({
         ))}
       </div>
       {/* Search Input */}
-      <div className="relative w-[80%] lg:max-w-[35rem] lg:ml-auto">
+      <div className="relative w-[90%] lg:max-w-[35rem] lg:ml-auto">
         <Input
           placeholder="Search tasks by title, description, or tags..."
           value={searchQuery}
