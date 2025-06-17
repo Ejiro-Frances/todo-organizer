@@ -24,7 +24,7 @@ const TaskFilterButtons: React.FC<Props> = ({
         <button
           key={status}
           onClick={() => setActiveFilter(status)}
-          className={`md:px-4 md:py-2 text-[0.625rem] md:text-sm font-medium transition-all duration-150 ${activeFilter === status ? "md:border-r-4 border-[#D9D9D9]" : ""}`}
+          className={`md:px-4 md:py-2 text-[0.5rem] md:text-sm font-medium transition-all duration-150 ${activeFilter === status ? "md:border-r-4 border-[#D9D9D9]" : ""}`}
         >
           <span
             className={`mr-2 md:mr-4 font-semibold ${activeFilter === status ? "text-[#004299]" : "text-[#999999]"}`}

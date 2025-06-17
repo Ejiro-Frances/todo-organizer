@@ -1,13 +1,13 @@
 import React from "react";
 import { Link } from "@tanstack/react-router";
 import { format } from "date-fns";
-import PriorityBadge from "./prioritybadge";
-import TaskStatusBadge from "./taskstatusbadge";
 import TaskEditForm from "./taskeditform";
 import { type Task } from "@/types/types";
 import { MdOutlineDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { Checkbox } from "./ui/checkbox";
+import { FiBarChart2 } from "react-icons/fi";
+
 import {
   Tooltip,
   TooltipContent,
@@ -40,7 +40,7 @@ const TaskItem: React.FC<Props> = ({
   isBusy,
 }) => {
   return (
-    <div className="bg-white/90 shadow border border-gray-200 rounded-xl mb-4 overflow-hidden">
+    <div className="bg-white/90 shadow border border-gray-200 rounded-xl mb-4">
       {isEditing ? (
         <TaskEditForm
           editForm={editForm}
@@ -50,40 +50,45 @@ const TaskItem: React.FC<Props> = ({
         />
       ) : (
         <div
-          className={`relative flex gap-4 p-4 border-l-4 border-[#F42D2D] ${task.status === "DONE" ? "bg-[rgba(0,0,0,0.3)]" : ""}`}
+          className={`relative px-4 py-5 border border-l-4 rounded-xl ${task.status === "DONE" ? "border-[#0EA420]" : task.status === "TODO" ? "border-[#F42D2D]" : "border-[#999999]"}`}
         >
-          {/* Checkbox */}
-          <Checkbox
-            checked={task.status === "DONE"}
-            onCheckedChange={onToggle}
-            className="mt-1 shrink-0 rounded-full"
-          />
-
-          {/* Main content */}
-          <div className="flex-1 ">
-            <div className=" flex justify-between items-start">
+          <div className="pb-4 border-b-2">
+            <div className="flex justify-between items-center">
               <h3
-                className={`text-lg font-semibold ${task.status === "DONE" ? "line-through text-gray-500" : ""}`}
+                className={`text-xl font-medium capitalize ${task.status === "DONE" ? "line-through text-gray-500" : ""}`}
               >
                 {task.name}
               </h3>
-
-              <PriorityBadge priority={task.priority} />
+              <Checkbox
+                checked={task.status === "DONE"}
+                onCheckedChange={onToggle}
+                className="mt-1 shrink-0 rounded-full fill-[#0EA420]"
+              />
             </div>
-
             {task.description && (
-              <p className="truncate text-sm text-gray-700 mt-1  max-w-[450px]">
+              <p className="truncate text-sm tracking-normal capitalize text-gray-700 mt-1  max-w-[450px]">
                 {task.description}
               </p>
             )}
+          </div>
+          {/* below the border */}
+          <div className="flex gap-4 items-center mt-3">
+            <div className=" flex gap-1 items-center text-xs">
+              <FiBarChart2 />
+              <span className="capitalize">{task.priority}</span>
+            </div>
+
+            {task.tags && (
+              <span className="text-blue-800 font-semibold capitalize text-xs">
+                {task.tags}
+              </span>
+            )}
+          </div>
+
+          {/* Main content */}
+          <div className="flex-1 ">
             <div className="flex justify-between">
               <div className="mt-4 flex flex-wrap gap-4 items-center text-xs text-gray-600">
-                {task.tags && (
-                  <span className="text-blue-800 font-semibold uppercase">
-                    {task.tags}
-                  </span>
-                )}
-                <TaskStatusBadge status={task.status} />
                 <span>
                   {format(new Date(task.createdAt), "MMM d, yyyy • h:mm a")}
                 </span>

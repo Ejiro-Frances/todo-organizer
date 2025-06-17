@@ -30,7 +30,7 @@ const TaskList: React.FC<Props> = ({
   deletingTaskId,
 }) => {
   return (
-    <>
+    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 md:gap-10">
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
@@ -46,7 +46,7 @@ const TaskList: React.FC<Props> = ({
           isBusy={updatingTaskId === task.id || deletingTaskId === task.id}
         />
       ))}
-    </>
+    </div>
   );
 };
 
