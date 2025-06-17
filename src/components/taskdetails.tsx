@@ -39,7 +39,7 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
   };
 
   return (
-    <div className="bg-white border border-[#E4E4E7] p-8 rounded-md shadow">
+    <div className="bg-white border border-[#E4E4E7] p-8 mt-10 rounded-md shadow">
       {editingTask === task.id ? (
         <TaskEditForm
           editForm={editForms[task.id]}
@@ -58,9 +58,9 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
             </p>
           )}
           <div>
-            <div className="grid grid-cols-2 gap-2">
+            <div className="grid grid-cols-1  md:grid-cols-2 gap-2">
               <PriorityBadge priority={task.priority} label="Priority" />
-              <span className="justify-self-end font-family-DM text-[#888888] text-xs">
+              <span className="md:justify-self-end font-family-DM text-[#888888] text-xs">
                 Created:{" "}
                 {format(new Date(task.createdAt), "MMM d, yyyy • h:mm a")}
               </span>
@@ -68,14 +68,14 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
                 <TaskStatusBadge status={task.status} label="Status" />
               </div>
               {task.tags && (
-                <span className="justify-self-end text-sm bg-purple-100 text-purple-800 px-3 py-1 rounded-md capitalize">
+                <span className="md:justify-self-end w-fit text-sm bg-purple-100 text-purple-800 px-3 py-1 rounded-md capitalize">
                   Tag: {task.tags}
                 </span>
               )}
             </div>
           </div>
 
-          <div className="flex justify-end gap-8 mt-10">
+          <div className="flex justify-end gap-8 my-10">
             <Button variant="outline" onClick={() => handleEditTask(task)}>
               <CiEdit size={18} />
               <span>Edit</span>

@@ -233,7 +233,7 @@ const TaskBoard: React.FC = () => {
   return (
     <>
       <Header />
-      <main className="bg-[#f5f5f5] min-h-screen pt-24 pb-10">
+      <main className="bg-[#f5f5f5] min-h-screen pt-24 pb-10 overflow-hidden">
         <Introduction setIsOpen={setIsModalOpen} />
         <TaskFilterButtons
           activeFilter={activeFilter}
