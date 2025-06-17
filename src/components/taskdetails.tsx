@@ -39,7 +39,7 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
   };
 
   return (
-    <div className="bg-white border border-[#E4E4E7] p-8 mt-28 rounded-md shadow">
+    <div className="bg-white border border-[#E4E4E7] m-4 p-4 md:p-8 my-28 rounded-md shadow">
       {editingTask === task.id ? (
         <TaskEditForm
           editForm={editForms[task.id]}

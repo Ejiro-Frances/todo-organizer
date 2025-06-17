@@ -92,7 +92,7 @@ const TaskDetailsPage = ({ taskId }: Props) => {
       <Header />
 
       <div className="max-w-[95%] mx-auto ">
-        <div className="flex items-center gap-2 mb-6 fixed top-10 lrft-0 bg-white w-full pt-16 pb-3 pl-5">
+        <div className="flex items-center gap-2 mb-6 fixed top-8 left-0 bg-white w-full pt-14 pb-3 pl-5">
           <Breadcrumb>
             <BreadcrumbList>
               <BreadcrumbItem>
