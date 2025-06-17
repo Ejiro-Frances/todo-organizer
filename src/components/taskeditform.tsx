@@ -18,7 +18,7 @@ const TaskEditForm: React.FC<Props> = ({
   className,
 }) => {
   return (
-    <div className={cn("p-8 space-y-3 mb-1 text-sm", className)}>
+    <div className={cn("md:p-8 space-y-3 mb-1 text-sm", className)}>
       <>
         <label htmlFor="" className="font-semibold">
           Title
@@ -38,7 +38,7 @@ const TaskEditForm: React.FC<Props> = ({
         <textarea
           value={editForm.description}
           onChange={(e) => onChange("description", e.target.value)}
-          className="w-full border p-2 mt-2 rounded-md"
+          className="w-full border p-2 mt-2 rounded-md min-h-32"
           placeholder="Description"
         />
       </>

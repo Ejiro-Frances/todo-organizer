@@ -39,7 +39,7 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
   };
 
   return (
-    <div className="bg-white border border-[#E4E4E7] p-8 mt-10 rounded-md shadow">
+    <div className="bg-white border border-[#E4E4E7] p-8 mt-28 rounded-md shadow">
       {editingTask === task.id ? (
         <TaskEditForm
           editForm={editForms[task.id]}
@@ -49,7 +49,7 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
         />
       ) : (
         <div>
-          <h2 className="text-xl md:text-[2rem] font-medium text-[#2B7FFF] mb-2 capitalize">
+          <h2 className="text-xl md:text-[2rem] font-medium text-[#2B7FFF] capitalize">
             {task.name}
           </h2>
           {task.description && (
@@ -75,7 +75,7 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
             </div>
           </div>
 
-          <div className="flex justify-end gap-8 my-10">
+          <div className="flex justify-end gap-8 mt-10">
             <Button variant="outline" onClick={() => handleEditTask(task)}>
               <CiEdit size={18} />
               <span>Edit</span>
