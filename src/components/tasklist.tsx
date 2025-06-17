@@ -30,7 +30,9 @@ const TaskList: React.FC<Props> = ({
   deletingTaskId,
 }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 md:gap-10">
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 md:gap-10 `}
+    >
       {tasks.map((task) => (
         <TaskItem
           key={task.id}
@@ -44,6 +46,7 @@ const TaskList: React.FC<Props> = ({
           onDelete={() => onDelete(task.id)}
           onToggle={() => onToggle(task)}
           isBusy={updatingTaskId === task.id || deletingTaskId === task.id}
+          className={`h-full px-4 py-5 border border-l-4 rounded-xl ${task.status === "DONE" ? "border-[#0EA420]" : task.status === "TODO" ? "border-[#F42D2D]" : "border-purple-600"}`}
         />
       ))}
     </div>

@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useRouter, Link } from "@tanstack/react-router";
-import { Skeleton } from "./ui/skeleton";
+import { Skeleton } from "../components/ui/skeleton";
 
 export default function ErrorBoundary({ error }: { error: Error }) {
   const router = useRouter();

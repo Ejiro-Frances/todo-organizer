@@ -1,5 +1,5 @@
 export const paginationConfig = {
-  DEFAULT_TASKS_PER_PAGE: 10,
-  PAGE_SIZE_OPTIONS: [5, 10, 25, 50] as const,
-  MAX_VISIBLE_PAGES: 5,
+  DEFAULT_TASKS_PER_PAGE: 12,
+  PAGE_SIZE_OPTIONS: [6, 12, 24, 48] as const,
+  MAX_VISIBLE_PAGES: 6,
 } as const;

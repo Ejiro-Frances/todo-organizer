@@ -1,20 +1,29 @@
 import React from "react";
-
-const statusColorMap = {
-  TODO: "text-blue-600",
-  IN_PROGRESS: "text-yellow-600",
-  DONE: "text-green-600",
-};
+import { PiSpinnerLight } from "react-icons/pi";
+import { IoIosCheckmarkCircle } from "react-icons/io";
 
 type Props = {
   status: "TODO" | "IN_PROGRESS" | "DONE";
+  label?: string;
 };
 
-const TaskStatusBadge: React.FC<Props> = ({ status }) => {
+const TaskStatusBadge: React.FC<Props> = ({ status, label }) => {
   return (
-    <span className={`capitalize ${statusColorMap[status]}`}>
-      Status: {status.replace("_", " ")}
-    </span>
+    <div className="flex gap-1 items-center">
+      <p className="font-family-DM text-[#888888] text-sm mr-1.5">{label}</p>
+      <div>
+        {status === "DONE" ? (
+          <IoIosCheckmarkCircle className="fill-[#0EA420]" />
+        ) : (
+          <PiSpinnerLight className="fill-[#F42D2D]" />
+        )}
+      </div>
+      <span
+        className={`capitalize text-sm ${status === "DONE" ? "text-[#0EA420]" : "text-[#F42D2D]"} `}
+      >
+        {status.toLowerCase().replace("_", " ")}
+      </span>
+    </div>
   );
 };
 

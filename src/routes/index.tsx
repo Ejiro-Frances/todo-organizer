@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
-import TaskBoard from "@/components/taskboard.tsx";
-import "../styles.css";
+import TaskBoard from "@/pages/taskboard";
+import "@/index.css";
 
 export const Route = createFileRoute("/")({
   component: App,

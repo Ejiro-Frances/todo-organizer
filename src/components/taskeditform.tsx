@@ -1,4 +1,5 @@
 import React from "react";
+import { cn } from "@/lib/utils";
 import { Button } from "./ui/button";
 
 type Props = {
@@ -6,6 +7,7 @@ type Props = {
   onChange: (field: string, value: string) => void;
   onSave: () => void;
   onCancel: () => void;
+  className?: string;
 };
 
 const TaskEditForm: React.FC<Props> = ({
@@ -13,9 +15,10 @@ const TaskEditForm: React.FC<Props> = ({
   onChange,
   onSave,
   onCancel,
+  className,
 }) => {
   return (
-    <div className="p-8 space-y-3 mb-1 text-sm">
+    <div className={cn("p-8 space-y-3 mb-1 text-sm", className)}>
       <>
         <label htmlFor="" className="font-semibold">
           Title

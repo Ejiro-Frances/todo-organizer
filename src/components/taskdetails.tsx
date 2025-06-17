@@ -9,6 +9,7 @@ import { MdOutlineDelete } from "react-icons/md";
 import { CiEdit } from "react-icons/ci";
 import { Button } from "./ui/button";
 import TaskEditForm from "./taskeditform";
+import { toast } from "sonner";
 
 type TaskDetailsCardProps = {
   task: Task;
@@ -33,12 +34,12 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
       await originalHandleDeleteTask(taskId);
       navigate({ to: "/" });
     } catch (error) {
-      console.error("Error deleting task:", error);
+      toast.error(`Error deleting task: ${error}`);
     }
   };
 
   return (
-    <div className="relative bg-gray-50 p-8 rounded-md shadow">
+    <div className="bg-white border border-[#E4E4E7] p-8 rounded-md shadow">
       {editingTask === task.id ? (
         <TaskEditForm
           editForm={editForms[task.id]}
@@ -47,37 +48,35 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
           onCancel={handleCancelEdit}
         />
       ) : (
-        <>
-          <div className="absolute top-5 right-5">
-            <PriorityBadge priority={task.priority} />
-          </div>
-
-          <div className="mb-4">
-            <h2 className="text-xl font-semibold mb-2 capitalize">
-              {task.name}
-            </h2>
-            {task.description && (
-              <p className="text-sm text-gray-700 leading-relaxed">
-                {task.description}
-              </p>
-            )}
-          </div>
-
-          <div className="flex flex-wrap gap-4 text-sm text-gray-600 mb-4">
-            {task.tags && (
-              <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded">
-                Tag: {task.tags}
+        <div>
+          <h2 className="text-xl md:text-[2rem] font-medium text-[#2B7FFF] mb-2 capitalize">
+            {task.name}
+          </h2>
+          {task.description && (
+            <p className=" text-gray-700 leading-relaxed mb-4">
+              {task.description}
+            </p>
+          )}
+          <div>
+            <div className="grid grid-cols-2 gap-2">
+              <PriorityBadge priority={task.priority} label="Priority" />
+              <span className="justify-self-end font-family-DM text-[#888888] text-xs">
+                Created:{" "}
+                {format(new Date(task.createdAt), "MMM d, yyyy • h:mm a")}
               </span>
-            )}
-            <TaskStatusBadge status={task.status} />
-            <span>
-              Created:{" "}
-              {format(new Date(task.createdAt), "MMM d, yyyy • h:mm a")}
-            </span>
+              <div>
+                <TaskStatusBadge status={task.status} label="Status" />
+              </div>
+              {task.tags && (
+                <span className="justify-self-end text-sm bg-purple-100 text-purple-800 px-3 py-1 rounded-md capitalize">
+                  Tag: {task.tags}
+                </span>
+              )}
+            </div>
           </div>
 
-          <div className="flex justify-end gap-8">
-            <Button onClick={() => handleEditTask(task)}>
+          <div className="flex justify-end gap-8 mt-10">
+            <Button variant="outline" onClick={() => handleEditTask(task)}>
               <CiEdit size={18} />
               <span>Edit</span>
             </Button>
@@ -86,7 +85,7 @@ const TaskDetailsCard: React.FC<TaskDetailsCardProps> = ({ task }) => {
               <span>Delete</span>
             </Button>
           </div>
-        </>
+        </div>
       )}
 
       {deleteModal && (

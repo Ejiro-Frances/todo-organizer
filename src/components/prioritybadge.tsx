@@ -1,22 +1,29 @@
 import React from "react";
+import { FiBarChart2 } from "react-icons/fi";
+import { cn } from "@/lib/utils";
 
 const colorMap = {
-  LOW: "bg-green-100 text-green-700",
-  MEDIUM: "bg-yellow-100 text-yellow-700",
-  HIGH: "bg-red-100 text-red-700",
+  LOW: "text-[#0EA420]",
+  MEDIUM: "text-purple-700",
+  HIGH: "text-red-700",
 };
 
 type Props = {
   priority: "LOW" | "MEDIUM" | "HIGH";
+  label?: string;
 };
 
-const PriorityBadge: React.FC<Props> = ({ priority }) => {
+const PriorityBadge: React.FC<Props> = ({ priority, label }) => {
   return (
-    <span
-      className={`flex items-center text-xs font-medium px-1.5 py-0.5 rounded-md ${colorMap[priority]}`}
-    >
-      {priority.charAt(0) + priority.slice(1).toLowerCase()}
-    </span>
+    <div className="flex gap-2 font-family-DM text-[#888888] text-sm">
+      <p>{label}</p>
+      <div
+        className={cn("flex gap-1 items-center text-xs", colorMap[priority])}
+      >
+        <FiBarChart2 />
+        <span className="capitalize">{`${priority.toLowerCase()}`}</span>
+      </div>
+    </div>
   );
 };
 

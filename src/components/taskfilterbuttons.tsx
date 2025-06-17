@@ -1,15 +1,22 @@
 import React from "react";
-
+import { IoIosClose, IoIosSearch } from "react-icons/io";
+import { Input } from "../components/ui/input";
 type Props = {
   activeFilter: "ALL" | "TODO" | "IN_PROGRESS" | "DONE";
   setActiveFilter: (status: Props["activeFilter"]) => void;
   counts: Record<Props["activeFilter"], number>;
+  searchQuery: string;
+  handleSearchChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  handleClearSearch: () => void;
 };
 
 const TaskFilterButtons: React.FC<Props> = ({
   activeFilter,
   setActiveFilter,
   counts,
+  handleSearchChange,
+  searchQuery,
+  handleClearSearch,
 }) => {
   const filters: Props["activeFilter"][] = [
     "ALL",
@@ -19,25 +26,48 @@ const TaskFilterButtons: React.FC<Props> = ({
   ];
 
   return (
-    <div className="bg-[#FBFBFB] rounded-md py-4 px-4 flex gap-3 md:gap-5 mb-4">
-      {filters.map((status) => (
-        <button
-          key={status}
-          onClick={() => setActiveFilter(status)}
-          className={`md:px-4 md:py-2 text-[0.5rem] md:text-sm font-medium transition-all duration-150 ${activeFilter === status ? "md:border-r-4 border-[#D9D9D9]" : ""}`}
-        >
-          <span
-            className={`mr-2 md:mr-4 font-semibold ${activeFilter === status ? "text-[#004299]" : "text-[#999999]"}`}
+    <div className="max-w-[95%] mx-auto lg:bg-[#FBFBFB] rounded-2xl lg:rounded-[4rem] py-3 px-4 lg:px-5 flex flex-col lg:flex-row gap-5 lg:gap-10 items-center">
+      <div className="flex-1 flex gap-2 justify-between overflow-auto [bg-[#FBFBFB] lg:bg-transparent">
+        {filters.map((status) => (
+          <button
+            key={status}
+            onClick={() => setActiveFilter(status)}
+            className={` flex items-center px-4 py-2  font-medium transition-all duration-150 ${activeFilter === status ? "border-r-4 border-[#D9D9D9]" : ""}`}
           >
-            {status === "ALL" ? "ALL" : `${status.replace("_", " ")}`}
-          </span>
-          <span
-            className={`text-white rounded-full px-2 py-1 ${activeFilter === status ? "bg-[#004299]" : "bg-[#D9D9D9]"}`}
+            <span
+              className={`mr-4 text-sm lg:text-lg font-semibold capitalize ${activeFilter === status ? "text-[#004299]" : "text-[#999999]"}`}
+            >
+              {status === "ALL" ? "ALL" : `${status.replace("_", " ")}`}
+            </span>
+            <span
+              className={`block w-7 h-7 text-sm align-middle py-1 text-white rounded-full ${activeFilter === status ? "bg-[#004299]" : "bg-[#D9D9D9]"}`}
+            >
+              {status === "ALL" ? `${counts.ALL}` : `${counts[status]}`}
+            </span>
+          </button>
+        ))}
+      </div>
+      {/* Search Input */}
+      <div className="relative w-[80%] lg:max-w-[35rem] lg:ml-auto">
+        <Input
+          placeholder="Search tasks by title, description, or tags..."
+          value={searchQuery}
+          onChange={handleSearchChange}
+          className="py-5 px-10 shadow placeholder:text-[#333333] text-[#1a1a1a] rounded-4xl"
+        />
+        {searchQuery && (
+          <button
+            onClick={handleClearSearch}
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-400 hover:text-gray-600 focus:outline-none"
+            aria-label="Clear search"
           >
-            {status === "ALL" ? `${counts.ALL}` : `${counts[status]}`}
-          </span>
-        </button>
-      ))}
+            <IoIosClose size={24} />
+          </button>
+        )}
+        <div className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+          <IoIosSearch />
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,7 +1,13 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Geist:wght@100..900&display=swap");
 
 @custom-variant dark (&:is(.dark *));
+
+@theme {
+  --font-family-Geist: "Geist", sans-serif;
+  --font-family-DM: "DM Sans", sans-serif;
+}
 
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
@@ -42,6 +48,7 @@
 }
 
 :root {
+  --font-family: "Geist", sans-serif;
   --radius: 0.625rem;
   --background: oklch(1 0 0);
   --foreground: oklch(0.129 0.042 264.695);

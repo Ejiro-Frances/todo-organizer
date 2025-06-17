@@ -3,7 +3,6 @@ import { useForm } from "@tanstack/react-form";
 import { Button } from "@/components/ui/button";
 import { type CreateTaskRequest, type Priority } from "@/types/types";
 import FieldInfo from "@/components/fieldinfo";
-import { format } from "date-fns";
 
 type Props = {
   onCreateTask: (task: CreateTaskRequest) => Promise<any>;
@@ -52,19 +51,7 @@ const TaskFormModal: React.FC<Props> = ({
   };
 
   return (
-    <div className="mt-20">
-      <div className="flex justify-between items-end my-8 border-b pb-4">
-        <div>
-          <h1 className="font-bold text-lg md:text-2xl mb-2">Today's Tasks</h1>
-          <p className="text-sm">{format(new Date(), "EEEE d, MMM yyyy")}</p>
-        </div>
-        <Button
-          onClick={() => setIsOpen(true)}
-          className=" text-sm font-semibold px-4 py-2 rounded-lg transition-colors duration-200 ease-in-out"
-        >
-          + Add Task
-        </Button>
-      </div>
+    <div>
       {isOpen && (
         <div
           className="absolute top-0 left-0 z-50 right-0 h-full flex justify-center items-center bg-[rgba(0,0,0,0.4)]"
