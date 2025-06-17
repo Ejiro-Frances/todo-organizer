@@ -8,13 +8,12 @@ This app helps users efficiently **create, update, and manage tasks**, with feat
 
 ## 📸 Screenshots
 
-| Home Page                          | 404 Page                              |
-| ---------------------------------- | ------------------------------------- |
-| ![Home](/public/task-board.png)    | ![404 Page](/public/not-found.png)    |
-| ---------------------------------- | ------------------------------------- |
-| Error Boundary                     | Task Detail Page                      |
-| ---------------------------------  | ------------------------------------- |
-| ![Error page](/public/error.png)   | ![Detail](/public/task-detail.png)    |
+| Home Page                         | 404 Page                              |
+| --------------------------------- | ------------------------------------- |
+| ![Home](/public/task-board.png)   | ![404 Page](/public/not-found.png)    |
+| Error Boundary                    | Task Detail Page                      |
+| --------------------------------- | ------------------------------------- |
+| ![Error page](/public/error.png)  | ![Detail](/public/task-detail.png)    |
 
 ---
 
